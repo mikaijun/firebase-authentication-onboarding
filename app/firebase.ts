@@ -1,8 +1,6 @@
-// 設定方法に関しては下記を参考にしました
-// see: https://zenn.dev/jun0723/articles/46441864f6dbbd
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { GoogleAuthProvider, UserCredential, getAuth, signInWithPopup, signOut } from "firebase/auth";
+import { GoogleAuthProvider, OAuthProvider, UserCredential, getAuth, signInWithPopup, signOut } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIRE_BASE_API_KEY,
@@ -22,8 +20,16 @@ if (!getApps()?.length) {
 export const auth = getAuth();
 export const db = getFirestore();
 
-export const login = (): Promise<UserCredential> => {
+// see: https://zenn.dev/jun0723/articles/46441864f6dbbd
+export const googleLogin = (): Promise<UserCredential> => {
   const provider = new GoogleAuthProvider();
+  return signInWithPopup(auth, provider);
+};
+
+// see: https://firebase.google.com/docs/auth/web/apple?hl=ja#web-modular-api
+// TODO: Apple Developer Programに参加する必要がありそう
+export const appleLogin = (): Promise<UserCredential> => {
+  const provider = new OAuthProvider('apple.com');
   return signInWithPopup(auth, provider);
 };
 
