@@ -9,14 +9,16 @@ import { UserCredential } from "firebase/auth";
 
 export default function Home() {
 
-  const [name, setName] = useState<string>("");
+  const [uuid, setUuid] = useState<string>("");
+  const [token, setToken] = useState<string>("");
 
   const setAuth = useCallback(async (result: UserCredential) => {
     try {
-      setName(result.user.displayName ?? '')
       const token = await result.user.getIdToken()
+      setToken(token)
+      setUuid(result.user.uid)
       // このtokenをヘッダーの乗っけてAPIを叩きます
-      console.log(token)
+      console.log({token, uid: result.user.uid})
     } catch (e) {
       console.error("setAuthエラー内容", e)
     }
@@ -44,8 +46,9 @@ export default function Home() {
     <div>
       <button onClick={useGoogleLogin}>googleログイン</button>
       <button onClick={useAppleLogin}>appleログイン</button>
-      <p>{!name && <>未ログイン: { name }</>}</p>
-      <p>{name && <>ログイン中の名前: { name }</>}</p>
+      <p>{!uuid && <>未ログイン</>}</p>
+      <p>{uuid && <>uuid: {uuid}</>}</p>
+      <p>{token && <>token: { token }</>}</p>
     </div>
   );
 }
